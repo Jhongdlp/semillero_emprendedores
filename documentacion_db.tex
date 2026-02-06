@@ -1,0 +1,106 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\geometry{top=2.5cm, bottom=2.5cm, left=3cm, right=3cm}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{\textbf{Documentación Técnica del Componente de Datos} \\ \large Sistema de Gestión Integral de Semillero de Emprendedores (SGISE)}
+\author{Equipo de Desarrollo}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Descripción General del Proyecto}
+
+El \textbf{Sistema de Gestión Integral de Semillero de Emprendedores (SGISE)} es una plataforma tecnológica diseñada para administrar el ciclo de vida de las startups dentro de un ecosistema de emprendimiento. 
+
+El componente de base de datos entregado (\texttt{DB.sql}) modela la persistencia de datos crítica del sistema, abarcando:
+\begin{itemize}
+    \item \textbf{Gestión de Identidad y Roles:} Administración segura de emprendedores, mentores e inversores.
+    \item \textbf{Ciclo de Vida de Startups:} Seguimiento desde la fase de ideación hasta el "exit" o consolidación.
+    \item \textbf{Rondas de Inversión:} Registro complejo de inyecciones de capital y cálculo de participación (equity).
+    \item \textbf{Seguimiento de Mentorías:} Registro de sesiones y retroalimentación cualitativa.
+    \item \textbf{Histórico de KPIs:} Almacenamiento flexible de métricas de negocio mediante estructuras JSONB para análisis de datos.
+\end{itemize}
+
+\section{Acceso a la Plataforma Web}
+Para complementar la validación del sistema y visualizar el flujo de entrada de datos, se ha desplegado una versión demostrativa del formulario de registro accesible públicamente:
+
+\begin{center}
+    \textbf{Formulario de Registro Web:} \\
+    \href{https://semillero-emprendedores-ul1allfqg.vercel.app/formulario}{https://semillero-emprendedores-ul1allfqg.vercel.app/formulario}
+\end{center}
+
+\section{Motor de Base de Datos Utilizado}
+
+Para este proyecto se ha seleccionado \textbf{PostgreSQL} (versión 14 o superior).
+
+\subsection*{Justificación Técnica:}
+\begin{itemize}
+    \item \textbf{Soporte Avanzado de JSONB:} Permite flexibilidad en el esquema para almacenar perfiles de usuarios y métricas de startups que cambian con el tiempo, combinando lo mejor del mundo SQL y NoSQL.
+    \item \textbf{Integridad Referencial Robusta:} Asegura la coherencia de los datos financieros críticos (inversiones y valoraciones).
+    \item \textbf{PL/pgSQL:} Permite encapsular lógica de negocio compleja (como el cálculo de valoración post-money) directamente en la base de datos mediante procedimientos almacenados y triggers, garantizando atomicidad y rendimiento.
+\end{itemize}
+
+\section{Instrucciones de Ejecución}
+
+El entregable consiste en un único archivo SQL llamado \texttt{DB.sql}. A continuación se detallan los pasos para su despliegue en un entorno local o servidor.
+
+\subsection{Prerrequisitos}
+\begin{itemize}
+    \item Tener instalado PostgreSQL 14+.
+    \item Cliente de línea de comandos \texttt{psql} o una interfaz gráfica como pgAdmin/DBeaver.
+\end{itemize}
+
+\subsection{Pasos para ejecutar (Línea de Comandos)}
+
+1. Abra su terminal o consola de comandos.
+2. Navegue hasta el directorio donde se encuentra el archivo \texttt{DB.sql}.
+3. Ejecute el siguiente comando para importar el esquema y los datos simulados:
+
+\begin{lstlisting}[language=bash]
+psql -U su_usuario -d nombre_de_su_base_de_datos -f DB.sql
+\end{lstlisting}
+
+\textit{Nota: El script incluye instrucciones \texttt{DROP SCHEMA} para limpiar ejecuciones previas, por lo que es seguro ejecutarlo múltiples veces en un entorno de pruebas.}
+
+\subsection{Verificación}
+Una vez ejecutado, puede verificar la creación correcta de las tablas consultando la vista de reporte incluida:
+
+\begin{lstlisting}[language=SQL]
+SELECT * FROM emprende_core.reporte_financiero_startups;
+\end{lstlisting}
+
+\end{document}
